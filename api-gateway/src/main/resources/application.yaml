@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: API-GATEWAY
+  main:
+    web-application-type: reactive
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8081}
