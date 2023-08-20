@@ -18,4 +18,4 @@ logging:
 
 spring:
   application:
-    name: api-gateway
+    name: API-GATEWAY
