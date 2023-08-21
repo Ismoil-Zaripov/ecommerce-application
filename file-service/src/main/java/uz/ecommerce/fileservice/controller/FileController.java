@@ -12,7 +12,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/api/v1/file")
 public class FileController {
     @Autowired
     private FileService fileService;
@@ -27,12 +27,19 @@ public class FileController {
         return ok(fileService.getFileByName(filename));
     }
 
-    @GetMapping(
-            value = "/open/{filename}",
-            consumes = MediaType.IMAGE_PNG_VALUE
-    )
+    @GetMapping("/open/{filename}")
     public ResponseEntity<byte[]> openFileByName(@PathVariable String filename){
-        return ok(fileService.openFileByName(filename));
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(fileService.openFileByName(filename));
+
+        /*
+        * return ResponseEntity
+                .ok()
+                .contentType(MediaType.valueOf(dbImage.get().getType()))
+                .body(ImageUtility.decompressImage(dbImage.get().getImage()));
+        * */
     }
 
     @DeleteMapping("/{fileId}")

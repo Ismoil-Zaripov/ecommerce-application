@@ -12,37 +12,35 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping("/api/v1/customer")
-public class CustomerController {
+@RequestMapping("/api/v1/user")
+public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<UserResponse> signUp(
-            @RequestBody UserRequest request
-    ) {
+    public ResponseEntity<UserResponse> signUp(@RequestBody UserRequest request){
         return new ResponseEntity<>(userService.signUp(request), CREATED);
     }
 
-    @GetMapping("/{customerId}")
-    public ResponseEntity<UserResponse> getCustomerById(@PathVariable int customerId) {
-        return ok(userService.getCustomerById(customerId));
+    @GetMapping("/{username}")
+    public ResponseEntity<UserResponse> getByUsername(@PathVariable String username){
+        return ok(userService.getByUsername(username));
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserResponse>> getCustomersList(
+    public ResponseEntity<Page<UserResponse>> getUsersList(
             @RequestParam int page,
             @RequestParam int size
-    ) {
-        return ok(userService.getCustomersList(page, size));
+    ){
+        return ok(userService.getUsersList(page,size));
     }
 
-    @PutMapping("/{customerId}")
-    public ResponseEntity<UserResponse> updateCustomer(
-            @PathVariable int customerId,
-            @RequestBody UserRequest customerRequest
-    ) {
-        return ok(userService.updateUser(customerId,customerRequest));
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable int userId,
+            @RequestParam UserRequest userRequest
+    ){
+        return ok(userService.updateUser(userId,userRequest));
     }
 }
