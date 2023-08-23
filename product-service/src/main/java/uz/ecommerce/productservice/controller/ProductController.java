@@ -8,7 +8,10 @@ import uz.ecommerce.commons.model.request.ProductRequest;
 import uz.ecommerce.commons.model.response.ProductResponse;
 import uz.ecommerce.productservice.service.ProductService;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -25,6 +28,11 @@ public class ProductController {
                 productService.addProduct(request),
                 CREATED
         );
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductResponse>> getAllProducts(){
+        return ok(productService.getAllProducts());
     }
 
     @GetMapping
@@ -48,5 +56,11 @@ public class ProductController {
             @RequestBody ProductRequest request
     ){
         return ok(productService.updateProduct(productId, request));
+    }
+
+    @DeleteMapping("/{productId}")
+    @ResponseStatus(OK)
+    public void deleteProduct(@PathVariable int productId) {
+        productService.deleteProduct(productId);
     }
 }

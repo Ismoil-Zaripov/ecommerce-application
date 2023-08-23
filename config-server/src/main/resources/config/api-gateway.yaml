@@ -26,15 +26,64 @@ spring:
           uri: lb://AUTHENTICATION-SERVICE
           predicates:
             - Path=/api/v1/authentication/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: AUTHENTICATION-SERVICE
+                fallbackuri: forward:/authentication-service-fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.brustCapacity: 1
         - id: FILE-SERVICE
           uri: lb://FILE-SERVICE
           predicates:
             - Path=/api/v1/file/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: FILE-SERVICE
+                fallbackuri: forward:/file-service-fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.brustCapacity: 1
         - id: PRODUCT-SERVICE
           uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/api/v1/product/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: PRODUCT-SERVICE
+                fallbackuri: forward:/product-service-fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.brustCapacity: 1
         - id: USER-SERVICE
           uri: lb://USER-SERVICE
           predicates:
             - Path=/api/v1/user/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: USER-SERVICE
+                fallbackuri: forward:/user-service-fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.brustCapacity: 1
+        - id: ORDER-SERVICE
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/order/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ORDER-SERVICE
+                fallbackuri: forward:/order-service-fallback
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.brustCapacity: 1

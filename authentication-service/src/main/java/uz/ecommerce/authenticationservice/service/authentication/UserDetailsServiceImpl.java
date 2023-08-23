@@ -1,6 +1,6 @@
 package uz.ecommerce.authenticationservice.service.authentication;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import uz.ecommerce.authenticationservice.repository.UserDetailsRepository;
 
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
+    private final UserDetailsRepository userDetailsRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

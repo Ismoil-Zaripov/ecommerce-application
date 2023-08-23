@@ -10,7 +10,13 @@ import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import reactor.core.publisher.Mono;
+import uz.ecommerce.authenticationservice.filter.JwtRequestFilter;
 import uz.ecommerce.commons.exception.APIExceptionHandler;
 
 import java.util.ArrayList;
@@ -49,4 +55,10 @@ public class ApplicationConfig {
                         .name("Demo Application Development Team")
                         .email("demo_support@imaginarycompany.com")));
     }
+
+    @Bean
+    public JwtRequestFilter requestFilter(){
+        return new JwtRequestFilter();
+    }
+
 }

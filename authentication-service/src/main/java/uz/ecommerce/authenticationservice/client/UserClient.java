@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import uz.ecommerce.commons.config.FeignClientConfig;
 import uz.ecommerce.commons.model.response.UserResponse;
 
-@FeignClient(name = "USER-SERVICE/user", configuration = FeignClientConfig.class)
+@FeignClient(name = "USER-SERVICE/api/v1/user", configuration = FeignClientConfig.class)
 public interface UserClient {
     @GetMapping("/{username}")
     ResponseEntity<UserResponse> getByUsername(@PathVariable String username);

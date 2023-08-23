@@ -68,6 +68,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse getUserById(int userId) {
+        User user = getUser(userId);
+        return mapToResponse(user);
+    }
+
+    @Override
     public Page<UserResponse> getUsersList(int page, int size) {
         return userRepository
                 .findAll(PageRequest.of(page, size))
@@ -76,11 +82,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse updateUser(int userId, UserRequest userRequest) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new APIException(
-                        "User not found", 404
-                ));
+        User user = getUser(userId);
 
         user.setFirstname(userRequest.getFirstname());
         user.setLastname(userRequest.getLastname());
@@ -95,5 +97,19 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return mapToResponse(user);
+    }
+
+    @Override
+    public void deleteUser(int userId) {
+        User user = getUser(userId);
+        userRepository.delete(user);
+    }
+
+    public User getUser(int userId){
+        return userRepository
+                .findById(userId)
+                .orElseThrow(() -> new APIException(
+                        "User not found", 404
+                ));
     }
 }

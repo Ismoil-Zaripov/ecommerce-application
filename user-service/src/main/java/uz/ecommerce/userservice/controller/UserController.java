@@ -9,6 +9,7 @@ import uz.ecommerce.commons.model.response.UserResponse;
 import uz.ecommerce.userservice.service.UserService;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -28,6 +29,11 @@ public class UserController {
         return ok(userService.getByUsername(username));
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable int userId){
+        return ok(userService.getUserById(userId));
+    }
+
     @GetMapping
     public ResponseEntity<Page<UserResponse>> getUsersList(
             @RequestParam int page,
@@ -42,5 +48,11 @@ public class UserController {
             @RequestParam UserRequest userRequest
     ){
         return ok(userService.updateUser(userId,userRequest));
+    }
+
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(OK)
+    public void deleteUser(@PathVariable int userId){
+        userService.deleteUser(userId);
     }
 }

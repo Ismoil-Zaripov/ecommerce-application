@@ -12,6 +12,9 @@ import uz.ecommerce.commons.model.response.ProductResponse;
 import uz.ecommerce.productservice.entity.Product;
 import uz.ecommerce.productservice.repository.ProductRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -62,6 +65,21 @@ public class ProductServiceImpl implements ProductService {
 
         productRepository.save(product);
         return mapToResponse(product);
+    }
+
+    @Override
+    public void deleteProduct(int productId) {
+        Product product = getProduct(productId);
+        productRepository.delete(product);
+    }
+
+    @Override
+    public List<ProductResponse> getAllProducts() {
+        return productRepository
+                .findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     private Product getProduct(int productId) {

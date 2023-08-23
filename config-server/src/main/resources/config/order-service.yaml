@@ -1,0 +1,15 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: ORDER-SERVICE
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: admin123
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
