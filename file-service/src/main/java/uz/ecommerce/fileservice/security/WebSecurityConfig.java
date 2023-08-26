@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,7 +16,8 @@ import uz.ecommerce.authenticationservice.filter.JwtRequestFilter;
 import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
-@EnableWebFluxSecurity
+@EnableWebSecurity
+@EnableGlobalAuthentication
 public class WebSecurityConfig {
 
     @Autowired

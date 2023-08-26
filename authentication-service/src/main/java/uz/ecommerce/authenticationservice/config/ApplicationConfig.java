@@ -11,14 +11,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import uz.ecommerce.authenticationservice.repository.UserDetailsRepository;
 import uz.ecommerce.commons.exception.APIExceptionHandler;
 
 @Configuration
 public class ApplicationConfig {
 
     @Autowired
-    private UserDetailsRepository userDetailsRepository;
+    private UserDetailsService userDetailsService;
 
     @Bean
     public ResponseEntityExceptionHandler apiExceptionHandler(){
@@ -27,7 +26,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userDetailsRepository.findByUsername(username).orElseThrow();
+        return username -> userDetailsService.loadUserByUsername(username);
     }
 
     @Bean

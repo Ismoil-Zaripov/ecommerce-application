@@ -9,13 +9,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uz.ecommerce.authenticationservice.entity.UserDetailsImpl;
-import uz.ecommerce.authenticationservice.repository.UserDetailsRepository;
+import uz.ecommerce.authenticationservice.client.UserClient;
 import uz.ecommerce.authenticationservice.service.jwt.JwtService;
-import uz.ecommerce.commons.constant.Role;
 import uz.ecommerce.commons.exception.APIException;
 import uz.ecommerce.commons.model.request.AuthenticationRequest;
 import uz.ecommerce.commons.model.request.RegisterRequest;
+import uz.ecommerce.commons.model.request.UserRequest;
 import uz.ecommerce.commons.model.response.AuthenticationResponse;
 
 @Service
@@ -24,18 +23,17 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsRepository userDetailsRepository;
+    private final UserDetailsService userDetailsService;
+    private final UserClient userClient;
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        UserDetails userDetails = userDetailsRepository
-                .findByUsername(authenticationRequest.getUsername())
-                .orElseThrow();
+        userClient.getByUsername(authenticationRequest.getUsername());
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                            userDetails.getUsername(),
-                            userDetails.getPassword()
+                            authenticationRequest.getUsername(),
+                            authenticationRequest.getPassword()
                     )
             );
 
@@ -47,26 +45,24 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             );
         }
 
-        return new AuthenticationResponse(jwtService.generateToken(userDetails));
+        UserDetails userDetails = userDetailsService
+                .loadUserByUsername(authenticationRequest.getUsername());
+
+        String token = jwtService
+                .generateToken(userDetails);
+
+        return new AuthenticationResponse(token);
     }
 
     @Override
     public void signUp(RegisterRequest request) {
-        boolean userIsExists = userDetailsRepository
-                .findByUsername(request.getUsername())
-                .isPresent();
-
-        if (userIsExists) throw new APIException(
-                "User already exists",
-                HttpStatus.BAD_REQUEST.value()
-        );
-
-        UserDetailsImpl userDetails = UserDetailsImpl.builder()
+        UserRequest userRequest = UserRequest.builder()
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
                 .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.CUSTOMER.name())
+                .password(request.getPassword())
                 .build();
 
-        userDetailsRepository.save(userDetails);
+        userClient.createUser(userRequest);
     }
 }

@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import uz.ecommerce.commons.exception.APIException;
 
 import java.security.Key;
 import java.util.Date;
@@ -79,5 +80,11 @@ public class JwtServiceImpl implements JwtService {
         return (
                 username.equals(userDetails.getUsername()) && !isTokenExpired(token)
         );
+    }
+
+    @Override
+    public Boolean validateToken(String token) {
+        if (!isTokenExpired(token)) return true;
+        else throw new RuntimeException("Token expired");
     }
 }

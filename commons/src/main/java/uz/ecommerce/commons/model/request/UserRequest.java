@@ -1,9 +1,11 @@
 package uz.ecommerce.commons.model.request;
 
+import lombok.Builder;
 import lombok.Data;
 import uz.ecommerce.commons.constant.Role;
 
 @Data
+@Builder
 public class UserRequest {
     private String firstname;
     private String lastname;

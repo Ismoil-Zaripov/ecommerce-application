@@ -1,9 +1,5 @@
-package uz.ecommerce.authenticationservice.entity;
+package uz.ecommerce.authenticationservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import uz.ecommerce.commons.model.response.UserResponse;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,28 +16,22 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 public class UserDetailsImpl implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String username;
-    private String password;
-    private String role;
+    private UserResponse userResponse;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.role));
+        return List.of(new SimpleGrantedAuthority(this.userResponse.getRole().name()));
     }
 
     @Override
     public String getPassword() {
-        return this.password;
+        return this.userResponse.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.userResponse.getUsername();
     }
 
     @Override

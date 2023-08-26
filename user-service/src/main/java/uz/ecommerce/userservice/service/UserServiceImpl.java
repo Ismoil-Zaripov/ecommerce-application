@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    public UserResponse signUp(UserRequest request) {
+    public UserResponse createUser(UserRequest request) {
 
         boolean userIsExists = userRepository
                 .findByUsername(request.getUsername())

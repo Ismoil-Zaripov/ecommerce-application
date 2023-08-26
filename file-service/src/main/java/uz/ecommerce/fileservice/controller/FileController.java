@@ -33,13 +33,6 @@ public class FileController {
                 .ok()
                 .contentType(MediaType.IMAGE_PNG)
                 .body(fileService.openFileByName(filename));
-
-        /*
-        * return ResponseEntity
-                .ok()
-                .contentType(MediaType.valueOf(dbImage.get().getType()))
-                .body(ImageUtility.decompressImage(dbImage.get().getImage()));
-        * */
     }
 
     @DeleteMapping("/{fileId}")
