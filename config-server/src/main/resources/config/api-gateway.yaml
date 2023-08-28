@@ -17,59 +17,43 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: AUTHENTICATION-SERVICE
-          uri: lb://AUTHENTICATION-SERVICE
-          predicates:
-            - Path=/api/v1/authentication/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: AUTHENTICATION-SERVICE
-                fallbackUri: forward:/authentication-service-fallback
         - id: FILE-SERVICE
           uri: lb://FILE-SERVICE
           predicates:
             - Path=/api/v1/file/**
-          filters:
-            - name: AuthenticationFilter
-            - name: CircuitBreaker
-              args:
-                name: FILE-SERVICE
-                fallbackUri: forward:/file-service-fallback
+#          filters:
+#            - CustomFilter
+#            - name: CircuitBreaker
+#              args:
+#                name: FILE-SERVICE
+#                fallbackUri: forward:/file-service-fallback
         - id: PRODUCT-SERVICE
           uri: lb://PRODUCT-SERVICE
           predicates:
             - Path=/api/v1/product/**
-          filters:
-            - name: AuthenticationFilter
-            - name: CircuitBreaker
-              args:
-                name: PRODUCT-SERVICE
-                fallbackUri: forward:/product-service-fallback
+#          filters:
+#            - CustomFilter
+#            - name: CircuitBreaker
+#              args:
+#                name: PRODUCT-SERVICE
+#                fallbackUri: forward:/product-service-fallback
         - id: USER-SERVICE
           uri: lb://USER-SERVICE
           predicates:
             - Path=/api/v1/user/**
-          filters:
-            - name: AuthenticationFilter
-            - name: CircuitBreaker
-              args:
-                name: USER-SERVICE
-                fallbackUri: forward:/user-service-fallback
+#          filters:
+#            - CustomFilter
+#            - name: CircuitBreaker
+#              args:
+#                name: USER-SERVICE
+#                fallbackUri: forward:/user-service-fallback
         - id: ORDER-SERVICE
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/api/v1/order/**
-          filters:
-            - name: AuthenticationFilter
-            - name: CircuitBreaker
-              args:
-                name: ORDER-SERVICE
-                fallbackUri: forward:/order-service-fallback
-
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
-    fetch-registry: true
-    register-with-eureka: true
+#          filters:
+#            - CustomFilter
+#            - name: CircuitBreaker
+#              args:
+#                name: ORDER-SERVICE
+#                fallbackUri: forward:/order-service-fallback

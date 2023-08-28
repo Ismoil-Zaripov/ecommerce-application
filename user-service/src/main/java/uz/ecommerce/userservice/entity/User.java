@@ -1,5 +1,6 @@
 package uz.ecommerce.userservice.entity;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

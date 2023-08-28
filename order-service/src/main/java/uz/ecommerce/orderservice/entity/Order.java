@@ -23,7 +23,6 @@ public class Order {
     private Integer id;
     @Column(name = "customer_id")
     private Integer customerId;
-    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private String orderDescription;
     @Column(name = "total_price")

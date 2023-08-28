@@ -31,7 +31,7 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductResponse>> getAllProducts(){
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
         return ok(productService.getAllProducts());
     }
 
@@ -46,7 +46,7 @@ public class ProductController {
     @GetMapping("/{productId}")
     public ResponseEntity<ProductResponse> getProductById(
             @PathVariable int productId
-    ){
+    ) {
         return ok(productService.getProductById(productId));
     }
 
@@ -54,7 +54,7 @@ public class ProductController {
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable int productId,
             @RequestBody ProductRequest request
-    ){
+    ) {
         return ok(productService.updateProduct(productId, request));
     }
 

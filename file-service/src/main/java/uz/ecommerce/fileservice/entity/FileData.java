@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "files")
-public class FileEntity {
+public class FileData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

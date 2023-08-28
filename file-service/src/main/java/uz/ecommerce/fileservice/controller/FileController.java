@@ -1,5 +1,6 @@
 package uz.ecommerce.fileservice.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +13,11 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/file")
 public class FileController {
-    @Autowired
-    private FileService fileService;
+
+    private final FileService fileService;
 
     @PostMapping("/upload")
     public ResponseEntity<FileResponse> upload(@RequestParam("file") MultipartFile multipartFile) {

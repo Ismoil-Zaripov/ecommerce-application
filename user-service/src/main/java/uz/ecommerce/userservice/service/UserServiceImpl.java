@@ -1,39 +1,38 @@
 package uz.ecommerce.userservice.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import uz.ecommerce.commons.constant.Role;
 import uz.ecommerce.commons.exception.APIException;
-import uz.ecommerce.commons.model.request.AuthenticationRequest;
 import uz.ecommerce.commons.model.request.UserRequest;
 import uz.ecommerce.commons.model.response.UserResponse;
-import uz.ecommerce.userservice.client.AuthenticationClient;
 import uz.ecommerce.userservice.entity.User;
-import uz.ecommerce.userservice.mapper.UserMapper;
 import uz.ecommerce.userservice.repository.UserRepository;
 
-import static uz.ecommerce.userservice.mapper.UserMapper.mapToResponse;
-
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
 
-    @Autowired
-    private AuthenticationClient authenticationClient;
-    @Autowired
-    private UserRepository userRepository;
+    @Override
+    public UserResponse getByUsername(String username) {
+        return userRepository
+                .findByUsername(username)
+                .map(this::mapToResponse)
+                .orElseThrow(() -> new APIException(
+                        "User not found", 404
+                ));
+    }
 
     @Override
     public UserResponse createUser(UserRequest request) {
+        boolean userIsExists = userRepository.findByUsername(request.getUsername()).isPresent();
 
-        boolean userIsExists = userRepository
-                .findByUsername(request.getUsername())
-                .isPresent();
-
+        System.out.println("userIsExists = " + userIsExists);
         if (userIsExists) throw new APIException(
                 "User already exists",
                 HttpStatus.BAD_REQUEST.value()
@@ -43,28 +42,13 @@ public class UserServiceImpl implements UserService {
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .username(request.getUsername())
-                .password(new BCryptPasswordEncoder().encode(request.getPassword()))  // encode
-                .role(Role.CUSTOMER)
+                .password(request.getPassword())
+                .role(request.getRole())
+                .imageUrl(request.getImageUrl())
                 .build();
 
         userRepository.save(user);
-
-        authenticationClient.authenticate(new AuthenticationRequest(
-                user.getUsername(),
-                user.getPassword()
-        ));
-
         return mapToResponse(user);
-    }
-
-    @Override
-    public UserResponse getByUsername(String username) {
-        return userRepository
-                .findByUsername(username)
-                .map(UserMapper::mapToResponse)
-                .orElseThrow(() -> new APIException(
-                        "User not found", 404
-                ));
     }
 
     @Override
@@ -77,7 +61,7 @@ public class UserServiceImpl implements UserService {
     public Page<UserResponse> getUsersList(int page, int size) {
         return userRepository
                 .findAll(PageRequest.of(page, size))
-                .map(UserMapper::mapToResponse);
+                .map(this::mapToResponse);
     }
 
     @Override
@@ -89,7 +73,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userRequest.getUsername());
         user.setPassword(
                 new BCryptPasswordEncoder()
-                .encode(userRequest.getPassword())
+                        .encode(userRequest.getPassword())
         );
         user.setRole(userRequest.getRole());
         user.setImageUrl(userRequest.getImageUrl());
@@ -105,7 +89,13 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
-    public User getUser(int userId){
+    private UserResponse mapToResponse(User user) {
+        UserResponse userResponse = new UserResponse();
+        BeanUtils.copyProperties(user, userResponse);
+        return userResponse;
+    }
+
+    private User getUser(int userId){
         return userRepository
                 .findById(userId)
                 .orElseThrow(() -> new APIException(

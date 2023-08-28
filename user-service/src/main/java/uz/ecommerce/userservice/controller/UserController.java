@@ -1,7 +1,10 @@
 package uz.ecommerce.userservice.controller;
 
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.ecommerce.commons.model.request.UserRequest;
@@ -13,20 +16,27 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    @GetMapping
+    public String info(){ return "USER-SERVICE"; }
+    @GetMapping("/{username}")
+    public ResponseEntity<UserResponse> getByUsername(
+            @PathVariable String username
+    ){
+        return ok(userService.getByUsername(username));
+    }
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request){
-        return new ResponseEntity<>(userService.createUser(request), CREATED);
-    }
-
-    @GetMapping("/{username}")
-    public ResponseEntity<UserResponse> getByUsername(@PathVariable String username){
-        return ok(userService.getByUsername(username));
+        return new ResponseEntity<>(
+                userService.createUser(request),
+                HttpStatus.CREATED
+        );
     }
 
     @GetMapping("/{userId}")

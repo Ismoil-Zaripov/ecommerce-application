@@ -4,20 +4,20 @@ server:
 spring:
   application:
     name: FILE-SERVICE
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: admin123
-    driverClassName: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-  servlet:
-    multipart:
-      max-file-size: 5MB
-      max-request-size: 5MB
-
-file:
-  upload-dir: file-service/src/main/resources/images
-  url: ${FILE_UPLOAD_URL:http://localhost:8080/api/v1/file}
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    username: postgres
+#    password: admin123
+#    driverClassName: org.postgresql.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#  servlet:
+#    multipart:
+#      max-file-size: 5MB
+#      max-request-size: 5MB
+#
+#file:
+#  upload-dir: file-service/src/main/resources/images
+#  url: ${FILE_UPLOAD_URL:http://localhost:8080/api/v1/file}

@@ -1,4 +1,4 @@
-package uz.ecommerce.authenticationservice.service.jwt;
+package uz.ecommerce.apigateway.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import uz.ecommerce.commons.exception.APIException;
 
 import java.security.Key;
 import java.util.Date;
@@ -17,24 +16,21 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtServiceImpl implements JwtService {
+public class JwtService {
     @Value("${jwt.secret.key}")
     private String SECRET_KEY;
 
     @Value(value = "${jwt.expiration}")
     private Long VALIDITY_IN_SECONDS;
 
-    @Override
     public String extractUsername(String token) {
         return extractClaims(token, Claims::getSubject);
     }
 
-    @Override
     public Date extractExpiration(String token) {
         return extractClaims(token, Claims::getExpiration);
     }
 
-    @Override
     public <T> T extractClaims(String token, Function<Claims, T> claimsResolver) {
         Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -44,7 +40,6 @@ public class JwtServiceImpl implements JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
@@ -58,7 +53,6 @@ public class JwtServiceImpl implements JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    @Override
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
@@ -74,7 +68,6 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
-    @Override
     public Boolean validateToken(String token, UserDetails userDetails) {
         String username = extractUsername(token);
         return (
@@ -82,9 +75,8 @@ public class JwtServiceImpl implements JwtService {
         );
     }
 
-    @Override
-    public Boolean validateToken(String token) {
-        if (!isTokenExpired(token)) return true;
-        else throw new RuntimeException("Token expired");
+
+    public Boolean isTokenValid(String token) {
+        return !isTokenExpired(token);
     }
 }

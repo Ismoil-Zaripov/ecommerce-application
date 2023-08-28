@@ -1,7 +1,6 @@
-package uz.ecommerce.authenticationservice.model;
+package uz.ecommerce.apigateway.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +12,6 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDetailsImpl implements UserDetails {
@@ -21,17 +19,17 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.userResponse.getRole().name()));
+        return List.of(new SimpleGrantedAuthority(userResponse.getRole().name()));
     }
 
     @Override
     public String getPassword() {
-        return this.userResponse.getPassword();
+        return userResponse.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return this.userResponse.getUsername();
+        return userResponse.getUsername();
     }
 
     @Override

@@ -9,7 +9,6 @@ import uz.ecommerce.commons.constant.Role;
 import uz.ecommerce.userservice.entity.User;
 
 import java.util.Optional;
-
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer>, PagingAndSortingRepository<User, Integer> {
     Optional<User> findByUsername(String username);

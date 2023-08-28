@@ -1,5 +1,6 @@
 package uz.ecommerce.fileservice.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import uz.ecommerce.commons.exception.APIException;
 import uz.ecommerce.commons.model.response.FileResponse;
-import uz.ecommerce.fileservice.entity.FileEntity;
+import uz.ecommerce.fileservice.entity.FileData;
 import uz.ecommerce.fileservice.repository.FileRepository;
 
 import java.io.*;
@@ -17,8 +18,9 @@ import java.nio.file.Files;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
     @Value("${file.upload-dir}")
@@ -26,8 +28,7 @@ public class FileServiceImpl implements FileService {
     @Value("${file.url}")
     private String fileUrl;
 
-    @Autowired
-    private FileRepository fileRepository;
+    private final FileRepository fileRepository;
 
     @Override
     public FileResponse upload(MultipartFile multipartFile) {
@@ -52,7 +53,7 @@ public class FileServiceImpl implements FileService {
             );
         }
 
-        FileEntity fileEntity = FileEntity.builder()
+        FileData fileEntity = FileData.builder()
                 .name(multipartFile.getOriginalFilename())
                 .size(multipartFile.getSize())
                 .path(path)
@@ -86,7 +87,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void delete(int id) {
-        FileEntity file = fileRepository.findById(id)
+        FileData file = fileRepository.findById(id)
                 .orElseThrow(() -> new APIException(
                         "File not found",
                         404
@@ -104,7 +105,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
-    private FileResponse mapToResponse(FileEntity file) {
+    private FileResponse mapToResponse(FileData file) {
         FileResponse fileResponse = new FileResponse();
         BeanUtils.copyProperties(file, fileResponse);
         return fileResponse;
