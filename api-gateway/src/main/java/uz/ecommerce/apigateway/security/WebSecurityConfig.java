@@ -15,11 +15,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import uz.ecommerce.apigateway.filter.JwtAuthenticationFilter;
 import uz.ecommerce.apigateway.model.UserDetailsImpl;
 import uz.ecommerce.commons.model.response.UserResponse;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.valueOf;
 
@@ -29,14 +34,14 @@ import static org.springframework.http.HttpStatus.valueOf;
 public class WebSecurityConfig {
 
     private final WebClient.Builder webClient;
+    private final ReactiveAuthenticationManager authenticationManager;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CorsConfigurationSource corsConfigurationSource;
+
     @Bean
-    public SecurityWebFilterChain filterChain(
-            ServerHttpSecurity http,
-            ReactiveAuthenticationManager authenticationManager,
-            @Lazy JwtAuthenticationFilter jwtAuthenticationFilter
-            ) {
+    public SecurityWebFilterChain filterChain(ServerHttpSecurity http) {
         return http
-                .cors(ServerHttpSecurity.CorsSpec::disable)
+                .cors(cors->cors.configurationSource(corsConfigurationSource))
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authenticationManager(authenticationManager)

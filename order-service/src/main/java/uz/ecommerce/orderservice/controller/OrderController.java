@@ -1,6 +1,6 @@
 package uz.ecommerce.orderservice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +12,11 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/order")
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
     @PostMapping("/place-order")
     public ResponseEntity<OrderResponse> placeOrder(@RequestBody OrderRequest request) {

@@ -13,11 +13,13 @@ import java.time.ZonedDateTime;
 
 @RestControllerAdvice
 public class ReactiveExceptionHandler {
+
     @ExceptionHandler({APIException.class})
-    public Mono<ResponseEntity<ErrorResponse>> apiGatewayException(APIException e){
+    public Mono<ResponseEntity<ErrorResponse>> apiGatewayException(APIException ex){
+
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .message(e.getMessage())
-                .status(HttpStatus.valueOf(e.getStatus()))
+                .message(ex.getMessage())
+                .status(HttpStatus.valueOf(ex.getStatus()))
                 .timestamp(ZonedDateTime.now(ZoneId.of("Z")))
                 .build();
 

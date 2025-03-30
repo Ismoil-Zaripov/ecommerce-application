@@ -1,8 +1,6 @@
 package uz.ecommerce.userservice.controller;
 
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +9,6 @@ import uz.ecommerce.commons.model.request.UserRequest;
 import uz.ecommerce.commons.model.response.UserResponse;
 import uz.ecommerce.userservice.service.UserService;
 
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -23,11 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public String info(){ return "USER-SERVICE"; }
+    public String info() {
+        return "USER-SERVICE";
+    }
+
     @GetMapping("/{username}")
-    public ResponseEntity<UserResponse> getByUsername(
-            @PathVariable String username
-    ){
+    public ResponseEntity<UserResponse> getByUsername(@PathVariable String username){
         return ok(userService.getByUsername(username));
     }
 
@@ -44,19 +42,15 @@ public class UserController {
         return ok(userService.getUserById(userId));
     }
 
-    @GetMapping
-    public ResponseEntity<Page<UserResponse>> getUsersList(
-            @RequestParam int page,
-            @RequestParam int size
-    ){
+    @GetMapping("/list")
+    public ResponseEntity<Page<UserResponse>> getUsersList(@RequestParam int page,
+                                                           @RequestParam int size) {
         return ok(userService.getUsersList(page,size));
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserResponse> updateUser(
-            @PathVariable int userId,
-            @RequestParam UserRequest userRequest
-    ){
+    public ResponseEntity<UserResponse> updateUser(@PathVariable int userId,
+                                                   @RequestParam UserRequest userRequest) {
         return ok(userService.updateUser(userId,userRequest));
     }
 

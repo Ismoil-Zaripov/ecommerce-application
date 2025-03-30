@@ -6,7 +6,6 @@ import uz.ecommerce.commons.model.response.UserResponse;
 
 public interface UserService {
     UserResponse getByUsername(String username);
-
     UserResponse createUser(UserRequest request);
     UserResponse getUserById(int userId);
     Page<UserResponse> getUsersList(int page, int size);

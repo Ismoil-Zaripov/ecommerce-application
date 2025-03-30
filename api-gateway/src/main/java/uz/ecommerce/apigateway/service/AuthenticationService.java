@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,71 +29,40 @@ public class AuthenticationService {
     private final WebClient.Builder userClient;
 
     public Mono<AuthenticationResponse> authenticate(AuthenticationRequest authenticationRequest) {
-
-        try {
-
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    authenticationRequest.getUsername(),
-                    authenticationRequest.getPassword()
-            ));
-
-            return userDetailsService
-                    .findByUsername(authenticationRequest.getUsername())
-                    .map(userDetails -> {
-
-                        String token = jwtService.generateToken(userDetails);
-                        return new AuthenticationResponse(token);
-                    });
-
-
-        } catch (Exception e) {
-            throw new APIException(
-                    "Bad credentials",
-                    HttpStatus.BAD_REQUEST.value()
-            );
-        }
+        return Mono.fromCallable(() -> authenticate(
+                                authenticationRequest.getUsername(),
+                                authenticationRequest.getPassword()
+                ))
+                .then(userDetailsService.findByUsername(authenticationRequest.getUsername()))
+                .map(userDetails -> new AuthenticationResponse(jwtService.generateToken(userDetails)))
+                .onErrorMap(e -> new APIException("Bad credentials", HttpStatus.BAD_REQUEST.value()));
     }
 
     public Mono<AuthenticationResponse> register(RegisterRequest request) {
+        UserRequest userRequest = UserRequest.builder()
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.CUSTOMER)
+                .build();
 
-        try {
-
-            UserRequest userRequest = UserRequest.builder()
-                    .firstname(request.getFirstname())
-                    .lastname(request.getLastname())
-                    .username(request.getUsername())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.CUSTOMER)
-                    .build();
-
-            return userClient.build()
-                    .post()
-                    .uri("USER-SERVICE/api/v1/user")
-                    .bodyValue(userRequest)
-                    .retrieve()
-                    .bodyToMono(UserResponse.class)
-                    .flatMap(userResponse -> {
-
-                        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                                request.getUsername(),
-                                request.getPassword()
-                        ));
-
-                        return userDetailsService.findByUsername(request.getUsername())
-                                .map(userDetails -> {
-                                    String token = jwtService.generateToken(userDetails);
-                                    return new AuthenticationResponse(token);
-                                });
-                    });
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new APIException(
-                    "Bad credentials",
-                    HttpStatus.BAD_REQUEST.value()
-            );
-        }
+        return userClient.build()
+                .post()
+                .uri("USER-SERVICE/api/v1/user")
+                .bodyValue(userRequest)
+                .retrieve()
+                .bodyToMono(UserResponse.class)
+                .flatMap(userResponse -> Mono.fromCallable(() -> authenticate(
+                        request.getUsername(),
+                        request.getPassword()
+                )))
+                .then(userDetailsService.findByUsername(request.getUsername()))
+                .map(userDetails -> new AuthenticationResponse(jwtService.generateToken(userDetails)))
+                .onErrorMap(e -> new APIException("Bad credentials", HttpStatus.BAD_REQUEST.value()));
     }
 
+    private Mono<Authentication> authenticate(String username, String password) {
+        return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+    }
 }

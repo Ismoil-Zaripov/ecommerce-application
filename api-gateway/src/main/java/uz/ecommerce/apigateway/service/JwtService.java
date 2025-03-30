@@ -40,6 +40,7 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
@@ -70,11 +71,8 @@ public class JwtService {
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         String username = extractUsername(token);
-        return (
-                username.equals(userDetails.getUsername()) && !isTokenExpired(token)
-        );
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-
 
     public Boolean isTokenValid(String token) {
         return !isTokenExpired(token);

@@ -14,6 +14,7 @@ import uz.ecommerce.userservice.repository.UserRepository;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
+
     private final UserRepository userRepository;
 
     @Bean

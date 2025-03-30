@@ -9,11 +9,11 @@ import uz.ecommerce.commons.model.request.AuthenticationRequest;
 import uz.ecommerce.commons.model.request.RegisterRequest;
 import uz.ecommerce.commons.model.response.AuthenticationResponse;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/authentication")
 public class AuthenticationController {
+
     private final AuthenticationService authenticationService;
     private final JwtService jwtService;
 

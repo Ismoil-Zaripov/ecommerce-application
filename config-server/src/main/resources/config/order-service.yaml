@@ -4,12 +4,12 @@ server:
 spring:
   application:
     name: ORDER-SERVICE
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/postgres
-#    username: postgres
-#    password: admin123
-#    driverClassName: org.postgresql.Driver
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/order_service_db
+    username: postgres
+    password: Sql123
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
